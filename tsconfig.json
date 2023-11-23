@@ -3,7 +3,7 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "types": ["vite/client", "three", "tweakpane"],
+    "types": ["vite/client", "three"],
 
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,

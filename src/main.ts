@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import * as dat from "dat.gui";
+// import * as dat from "dat.gui";
 import nx from "./img/nx.png";
 import ny from "./img/ny.png";
 import nz from "./img/nz.png";
@@ -11,7 +11,6 @@ import wood from "./img/wood.jpeg";
 import seaview from "./img/view3.png";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
-import { gsap } from "gsap";
 import "./style.css";
 
 const scene = new THREE.Scene();
@@ -50,34 +49,34 @@ scene.add(gridHelper);
 //glb
 const gltfLoader = new GLTFLoader();
 const skybluesea = new URL("./img/skybluesea.glb", import.meta.url);
-const balloon = gltfLoader.load(
-  skybluesea.href,
-  (gltf) => {
-    const model = gltf.scene;
-    model.scale.set(2, 2, 2);
-    scene.add(model);
-    model.position.set(-20, 10, -3);
-    model.rotation.y = (-Math.PI / 2) * 3; //90 degrees
-    model.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        child.material.roughness = 0;
-        child.material.metalness = 1;
-        child.material.uniforms = {
-          bias: { value: 0.41 },
-          scale: { value: -0.13 },
-          intensity: { value: 2.0 },
-          factor: { value: 1.0 },
-        };
-      }
-    });
-  },
-  undefined,
-  (error) => {
-    console.error(error);
-  }
-);
+// const balloon = gltfLoader.load(
+//   skybluesea.href,
+//   (gltf) => {
+//     const model = gltf.scene;
+//     model.scale.set(2, 2, 2);
+//     scene.add(model);
+//     model.position.set(-20, 10, -3);
+//     model.rotation.y = (-Math.PI / 2) * 3; //90 degrees
+//     model.traverse((child) => {
+//       if (child instanceof THREE.Mesh) {
+//         child.castShadow = true;
+//         child.receiveShadow = true;
+//         child.material.roughness = 0;
+//         child.material.metalness = 1;
+//         child.material.uniforms = {
+//           bias: { value: 0.41 },
+//           scale: { value: -0.13 },
+//           intensity: { value: 2.0 },
+//           factor: { value: 1.0 },
+//         };
+//       }
+//     });
+//   },
+//   undefined,
+//   (error) => {
+//     console.error(error);
+//   }
+// );
 
 //plane
 
@@ -195,7 +194,7 @@ window.addEventListener("mousemove", (e) => {
 const raycaster = new THREE.Raycaster();
 
 // gui
-const gui = new dat.GUI();
+// const gui = new dat.GUI();
 
 // const options = {
 //   speed: 0.01,
@@ -224,17 +223,17 @@ const cloudGeometry = new THREE.PlaneGeometry(100, 60);
 
 const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load("https://mrdoob.com/lab/javascript/webgl/clouds/cloud10.png", animate);
-texture.magFilter = THREE.LinearMipMapLinearFilter;
+texture.magFilter = THREE.LinearFilter;
 texture.minFilter = THREE.LinearMipMapLinearFilter;
 
 var fog = new THREE.Fog(0x4584b4, -100, 3000);
 
 const cloudMaterial = new THREE.ShaderMaterial({
   uniforms: {
-    map: { type: "t", value: texture },
-    fogColor: { type: "c", value: fog.color },
-    fogNear: { type: "f", value: fog.near },
-    fogFar: { type: "f", value: fog.far },
+    map: { value: texture },
+    fogColor: {  value: fog.color },
+    fogNear: { value: fog.near },
+    fogFar: { value: fog.far },
   },
   vertexShader: `
 varying vec2 vUv;
@@ -350,7 +349,7 @@ function animate() {
   sLightHelper.update();
 
   raycaster.setFromCamera(mousePosition, camera);
-  const intersects = raycaster.intersectObjects(scene.children);
+  // const intersects = raycaster.intersectObjects(scene.children);
 
   renderer.render(scene, camera);
 }
