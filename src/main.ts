@@ -175,6 +175,7 @@ window.document.querySelector('.end-scene')!.addEventListener("click", () => {
 })
 
 
+
 //wave
 const sea = document.querySelector(".sea") as HTMLDivElement;
 const waveWrapper = document.querySelector(".wave-wrapper") as HTMLDivElement;
