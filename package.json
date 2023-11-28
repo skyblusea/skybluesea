@@ -17,6 +17,7 @@
   "dependencies": {
     "dat.gui": "^0.7.9",
     "gsap": "^3.12.2",
+    "split-text-js": "^1.0.3",
     "three": "^0.158.0"
   }
 }
