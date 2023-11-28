@@ -7,16 +7,14 @@ import nz from "./img/nz.png";
 import px from "./img/px.png";
 import py from "./img/py.png";
 import pz from "./img/pz.png";
-import wood from "./img/wood.jpeg";
-import woodbmap from "./img/woodtexture.png";
-import wooddmap from './img/woodDisplacement.png'
-import seaview from "./img/seaview.jpg";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import "./style.css";
 import { gsap } from "gsap";
 // @ts-ignore
 import SplitTextJS from "split-text-js";
+import { get } from "immer/dist/internal.js";
+import { sub } from "three/examples/jsm/nodes/Nodes.js";
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({
@@ -47,225 +45,154 @@ scene.add(axesHelper);
 const gridHelper = new THREE.GridHelper(30, 30);
 scene.add(gridHelper);
 
-
 //subway motion & svg motionblur
-var blurFilter = document.getElementById('blur-filter');
+const blurFilter = document.getElementById("blur-filter");
+const view = document.getElementById("view");
+
+const setBlur = (x: number, y: number) => {
+  blurFilter!.setAttribute("stdDeviation", x + "," + y);
+};
+
+const getPos = () => {
+  const rect = view!.getBoundingClientRect();
+  return {
+    x: rect.left,
+    y: rect.top,
+  };
+};
+
+const getSizeofView = () => {
+  const rect = document.querySelector(".subwayview")!.getBoundingClientRect();
+  return rect.width;
+};
+
+const subwayViewSize = getSizeofView();
+console.log(subwayViewSize);
+
+let lastPos = getPos();
+
+const update = () => {
+  const curPos = getPos();
+  const dx = Math.abs(curPos.x - lastPos.x) * 2;
+  const dy = Math.abs(curPos.y - lastPos.y) * 2;
+  setBlur(dx, dy);
+  lastPos = curPos;
+  requestAnimationFrame(update);
+};
+
+update();
+
+const viewtl = gsap.timeline();
+const enlargetl = gsap.timeline();
+const entertl = gsap.timeline();
+
+
+gsap.config({ force3D: true });
+
+let goto = -subwayViewSize * 4 - 40;
+
+const gohomebtn = document.querySelector("#gohome") as HTMLButtonElement;
+const getrestbtn = document.querySelector("#getrest") as HTMLButtonElement;
+const seaview = window.document.querySelector(".seaview") as HTMLImageElement;
+const subway = window.document.querySelector("#subway") as HTMLImageElement;
+
+const endIntro = () => {
+  entertl
+  .to('.intro-scene', {
+    duration: 0.5,
+    autoAlpha: 0,
+    ease: "power2.out",
+    onComplete: () => {
+      const intro = window.document.querySelector('.intro-scene') as HTMLDivElement;
+      intro.style.display = "none";
+      window.document.body.style.overflow = "auto";
+    }
+  })
+}
+
+const moveSubway = () => {
+  viewtl.to(view, {
+    duration: 3,
+    ease: "power4.out",
+    x: goto,
+    onComplete: () => {
+      goto = goto === 20 ? 20 - subwayViewSize * 4 - 40 : 20;
+    },
+  })
+  .to(gohomebtn,{
+    duration: 0.2,
+    autoAlpha: 0,
+    ease: "power2.in",
+  },"<")
+  .to(".subway", {
+    duration: 3,
+    filter: " brightness(0.3)",
+    ease: "power2.in",
+  },'<')
+  .to(getrestbtn, {
+    duration: 0.8,
+    autoAlpha: 1,
+    ease: "power2.out",
+    onComplete: () => {
+      getrestbtn.addEventListener("mouseover", () => {
+        enlargetl.to(seaview, {
+          duration: 0.5,
+          z: 20,
+          ease: "power2.out",
+        }).to(subway, {
+          duration: 0.5,
+          z: 60,
+          ease: "power2.out",
+        },'<').to('.fa-person-running',{
+          duration: 0.5,
+          y: -10,
+          rotate: -20,
+          ease: "power2.out",
+        },'<')
+      })
+      getrestbtn.addEventListener("mouseleave", () => {
+        enlargetl.to(seaview, {
+          duration: 0.5,
+          z: 0,
+          ease: "power2.out",
+        }).to(subway, {
+          duration: 0.5,
+          z: 0,
+          ease: "power2.out",
+        },'<').to('.fa-person-running',{
+          duration: 0.5,
+          rotate: 0,
+          y: 0,
+          ease: "power2.out",
+        },'<')})
+      getrestbtn.addEventListener("click", () =>endIntro())
+    }
+  },"-=1")
+}
+gohomebtn.addEventListener("click", () => moveSubway());
+window.document.querySelector('.end-scene')!.addEventListener("click", () => {
+  endIntro()
+})
 
 
 //wave
 const sea = document.querySelector(".sea") as HTMLDivElement;
 const waveWrapper = document.querySelector(".wave-wrapper") as HTMLDivElement;
 const wavetl = gsap.timeline({ repeat: -1 });
-wavetl.to('#text-path'
-,{duration: 5,
+wavetl.to("#text-path", {
+  duration: 5,
   attr: {
     startOffset: "100%",
   },
   ease: "none",
-},
-)
-
-// const generateWave = () => {
-//   const viewportWidth = window.innerWidth;
-//   const waveWidth = waveWrapper.clientWidth;
-//   const copiesNeeded = Math.ceil(viewportWidth / waveWidth);
-//   for (let i = 0; i < copiesNeeded; i++) {
-//     const waveClone = waveWrapper.cloneNode(true) as HTMLDivElement;
-//     sea.appendChild(waveClone);
-//   }
-//   let step = 1;
-//   // let y = 10 * Math.abs(Math.sin(step)) ;
-//   // let y = 10;
-//   let stagger = 0.1;
-
-//   // let maxWaveHeight = 100
-//   // let diff  = maxWaveHeight /
-
-//   const waveElements = gsap.utils.toArray(".wave") as HTMLDivElement[];
-
-//   const wave = waveElements.forEach((waveElement, idx) => {
-//     const split = new SplitTextJS(waveElement);
-//     const splitCharsLength = split.chars.length;
-//     let level =( 6 - (idx % 6));
-//     // let y = 10 + 10 * Math.tan((num * Math.PI) / 180)
-//     console.log(level)
-//     let y = Math.tan((level * Math.PI) / 180) * 1000;
-//     // console.log(y)
-//     console.log(idx)
-//     split.chars.forEach((char:HTMLSpanElement,index:number) => {
-//       const duration = 2 ;
-//       const tl = gsap.timeline({ 
-//         repeat: 3,
-//         // repeatRefresh: true,
-//         // repeatDelay: 4
-//         // repeatDelay: - (index+1) * (duration/22) + Math.floor(idx/6)*duration,
-//       });
-//       tl
-//       .to(char, {
-//         duration,
-//         y: -y,
-//         scaleY: level/3,
-//         delay: (index+1) * (duration/22),
-//         // Math.floor(idx/6)*duration,
-//         ease: "power2.out",
-//       })
-//       .to(char, {
-//         duration,
-//         y: 0,
-//         scaleY: 1,
-//       })
-      
-//     });
-
-//     // const wavetl = gsap.timeline({ repeat: 3 });
-//     // console.log(idx)
-//     // wavetl
-//     //   .to(split.chars, {
-//     //     duration: 1,
-//     //     y: -y,
-//     //     scaleY: 1,
-//     //     stagger: 0.1,
-//     //   })
-//     //   .to(split.chars, {
-//     //     duration: 1,
-//     //     y: 0,
-//     //     scaleY: 1,
-//     //     stagger: 0.1,
-//     //   });
-//   });
-// };
- 
-// generateWave();
-
-// renderer.setAnimationLoop(wave);
-
-
-
-
-
+});
 
 const gltfLoader = new GLTFLoader();
 const skybluesea = new URL("./img/skybluesea.glb", import.meta.url);
-// const balloon = gltfLoader.load(
-//   skybluesea.href,
-//   (gltf) => {
-//     const model = gltf.scene;
-//     model.scale.set(2, 2, 2);
-//     scene.add(model);
-//     model.position.set(-20, 10, -3);
-//     model.rotation.y = (-Math.PI / 2) * 3; //90 degrees
-//     model.traverse((child) => {
-//       if (child instanceof THREE.Mesh) {
-//         child.castShadow = true;
-//         child.receiveShadow = true;
-//         child.material.roughness = 0;
-//         child.material.metalness = 1;
-//         child.material.uniforms = {
-//           bias: { value: 0.41 },
-//           scale: { value: -0.13 },
-//           intensity: { value: 2.0 },
-//           factor: { value: 1.0 },
-//         };
-//       }
-//     });
-//   },
-//   undefined,
-//   (error) => {
-//     console.error(error);
-//   }
-// );
-
-//plane
-
-//wood
-
-// const woodMap = new THREE.TextureLoader().load(wood);
-// woodMap.wrapS = THREE.RepeatWrapping;
-// woodMap.wrapT = THREE.RepeatWrapping;
-// woodMap.repeat.set(4, 1);
-// const woodbMap = new THREE.TextureLoader().load(woodbmap);
-// const wooddMap = new THREE.TextureLoader().load(wooddmap);
-// woodbMap.wrapS = THREE.RepeatWrapping;
-// woodbMap.wrapT = THREE.RepeatWrapping;
-// woodbMap.repeat.set(4, 1);
-// wooddMap.wrapS = THREE.RepeatWrapping;
-// wooddMap.wrapT = THREE.RepeatWrapping;
-// wooddMap.repeat.set(4, 1);
-// const woodGeometry = new THREE.PlaneGeometry(60, 30);
-// woodGeometry.rotateX(-Math.PI / 2); //90 degrees
-// woodGeometry.rotateY(-Math.PI / 2); //90 degrees
-// const woodMaterial = new THREE.MeshStandardMaterial({
-//   color: 0xffffff,
-//   side: THREE.DoubleSide,
-//   map: woodMap,
-//   bumpMap: woodbMap,
-//   bumpScale: 2,
-//   displacementMap: wooddMap,
-//   displacementScale: 5,
-// });
-
-// const floor = new THREE.Mesh(woodGeometry, woodMaterial);
-// const leftwall = new THREE.Mesh(woodGeometry, woodMaterial);
-// const rightwall = new THREE.Mesh(woodGeometry, woodMaterial);
-// const ceiling = new THREE.Mesh(woodGeometry, woodMaterial);
-
-
-// scene.add(leftwall);
-// scene.add(rightwall);
-// scene.add(floor);
-// scene.add(ceiling);
-// ceiling.position.set(0, 10, 0);
-// leftwall.position.set(10, 0, 0);
-// rightwall.position.set(-10, 0, 0);
-// floor.position.setY(-20);
-// leftwall.rotation.z = -Math.PI / 2; //90 degrees
-// rightwall.rotation.z = Math.PI / 2; //90 degrees
-
-// floor.receiveShadow = true; //shadow enable !!!!
-// ceiling.receiveShadow = true; //shadow enable !!!!
-// leftwall.receiveShadow = true;
-// rightwall.receiveShadow = true;
-// leftwall.castShadow = true;
-// rightwall.castShadow = true;
-// ceiling.castShadow = true;
-
-//seaview pannel
-// const seaviewTexture = new THREE.TextureLoader().load(seaview);
-// const seaviewMaterial = new THREE.MeshBasicMaterial({
-//   side: THREE.DoubleSide,
-//   map: seaviewTexture,
-// });
-
-// seaviewMaterial.transparent = false;
-
-// const seaviewGeometry = new THREE.PlaneGeometry(112, 80);
-// const viewpannel = new THREE.Mesh(seaviewGeometry, seaviewMaterial);
-// scene.add(viewpannel);
-
-// viewpannel.rotation.y = -Math.PI;
-// // viewpannel.position.set(9,0,-101)
-// viewpannel.position.set(9, 0, -50);
-
 
 //light
 const ambientLight = new THREE.AmbientLight(0x333333);
 scene.add(ambientLight);
-
-// const spotLight = new THREE.DirectionalLight(0xffffff, 10);
-// scene.add(spotLight);
-// spotLight.position.set(200, 200, -155);
-// spotLight.castShadow = true;
-// spotLight.shadow.camera.left = -50;
-// spotLight.shadow.camera.right = 50;
-// spotLight.shadow.camera.top = 50;
-// spotLight.shadow.camera.bottom = -50;
-// spotLight.target.position.set(0, 0, 20);
-
-// const sLightHelper = new THREE.DirectionalLightHelper(spotLight);
-// scene.add(sLightHelper);
-// ``;
-// const dLightShadowHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-// scene.add(dLightShadowHelper);
 
 //background
 
@@ -357,6 +284,7 @@ window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  getSizeofView();
 }); // 자동으로 바뀌게 해줌
 
 const initialCameraRotation = camera.rotation.clone();
@@ -367,7 +295,6 @@ function moveCamera() {
   camera.position.x = initialCameraX + t * 0.0002;
   camera.position.y = initialCameraY + t * 0.0002;
   console.log(camera.position.x, camera.position.y, camera.position.z);
-
 
   // const distance = camera.position.z - viewpannel.position.z;
   // if (distance <= 40 && distance >= 0) {

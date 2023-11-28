@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/src/img/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/16a2faadc5.js" crossorigin="anonymous"></script>
     <title>하늘빛바다펜션</title>
   </head>
   <body>
@@ -23,30 +24,42 @@
         <span>Reservation</span>
         <span>Contact US</span>
       </nav>
-      <div class="motion-blur">
-        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="filters">
-          <defs>
-            <filter id="blur">
-              <feGaussianBlur id="blur-filter" in="SourceGraphic" stdDeviation="0,0" />
-            </filter>
-          </defs>
-        </svg>
-      </div>
       <div class="intro-scene">
         <div class="box subway">
-          <img src="/src/img/subway.png" alt="subway" />
+          <img src="/src/img/subway.png" id="subway" alt="subway" />
         </div>
-        <div class="box view">
+        <div class="box view" id="view">
+          <img src="/src/img/subwayview.png" class="subwayview" alt="subwayview" />
+          <img src="/src/img/subwayview.png" class="subwayview" alt="subwayview" />
+          <img src="/src/img/subwayview.png" class="subwayview" alt="subwayview" />
           <img src="/src/img/subwayview.png" class="subwayview" alt="subwayview" />
           <img src="/src/img/seaview.jpg" class="seaview" alt="seaview" />
+        </div>
+        <div class="buttons">
+          <button class="end-scene">
+            <i class="fa-solid fa-xmark fa-2xl"></i>
+          </button>
+          <button class="button gohome" id="gohome">
+            <i class="fa-solid fa-house"></i>
+            집으로 돌아가기
+          </button>
+          <button class="button getrest" id="getrest">
+            <i class="fa-solid fa-person-running fa-lg"></i>
+            <div class="ocean-in-btn">
+              <div class="wave-in-btn"></div>
+              <div class="wave-in-btn"></div>
+              <div class="wave-in-btn"></div>
+            </div>
+            바다보러 가기
+          </button>
         </div>
       </div>
 
       <h1>스크롤해서 하늘빛바다 방문하기</h1>
       <header>
-        <h1>Welcome Skyblue Sea Pension</h1>
-        <p>PERFECT PLACE</p>
-        <p>FOR RELAX</p>
+        <p>안녕하세요.</p>
+        <p>하늘과 바다가 만나는 곳</p>
+        <p>하늘빛바다펜션입니다.</p>
       </header>
       <svg id="wave" viewBox="0 0 1000 200" xmlns="http://www.w3.org/2000/svg">
         <path id="text-curve" d="M 0 100 s 260 150 520 0 c 260 -150 480 0 480 0" fill="none" />
@@ -55,11 +68,7 @@
           <textPath id="text-path" href="#text-curve" startOffset="0%" fill="currentColor">* Welcone to Skyblue Sea Pension</textPath>
         </text>
       </svg>
-
-      <blockquote>
-        <p>하늘과 바다가 만나는 곳</p>
-        <p>하늘빛바다펜션에서 행복한 휴식과 안락함을 느껴 보세요</p>
-      </blockquote>
+      <p>하늘빛바다펜션에서 행복한 휴식과 안락함을 느껴 보세요</p>
 
       <section>
         <h2>Perfect Place for Relax</h2>
@@ -310,7 +319,13 @@
         <a href="https://rev.yapen.co.kr/external/set?ypIdx=50146">하늘빛바다펜션 예약하기</a>
       </blockquote>
     </main>
-
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="filters">
+      <defs>
+        <filter id="blur">
+          <feGaussianBlur id="blur-filter" in="SourceGraphic" stdDeviation="40,10" />
+        </filter>
+      </defs>
+    </svg>
     <script id="vs" type="x-shader/x-vertex">
       varying vec2 vUv;
 
