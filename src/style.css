@@ -219,7 +219,7 @@ nav {
 }
 textPath {
   color: #739bc4;
-  mix-blend-mode: difference;
+  /* mix-blend-mode: difference; */
 }
 
 #gohome{

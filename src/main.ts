@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // import * as dat from "dat.gui";
 import nx from "./img/nx.png";
 import ny from "./img/ny.png";
@@ -7,14 +7,14 @@ import nz from "./img/nz.png";
 import px from "./img/px.png";
 import py from "./img/py.png";
 import pz from "./img/pz.png";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+// import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
 import "./style.css";
 import { gsap } from "gsap";
 // @ts-ignore
 import SplitTextJS from "split-text-js";
-import { get } from "immer/dist/internal.js";
-import { sub } from "three/examples/jsm/nodes/Nodes.js";
+// import { get } from "immer/dist/internal.js";
+// import { sub } from "three/examples/jsm/nodes/Nodes.js";
 
 const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({
@@ -177,8 +177,8 @@ window.document.querySelector('.end-scene')!.addEventListener("click", () => {
 
 
 //wave
-const sea = document.querySelector(".sea") as HTMLDivElement;
-const waveWrapper = document.querySelector(".wave-wrapper") as HTMLDivElement;
+// const sea = document.querySelector(".sea") as HTMLDivElement;
+// const waveWrapper = document.querySelector(".wave-wrapper") as HTMLDivElement;
 const wavetl = gsap.timeline({ repeat: -1 });
 wavetl.to("#text-path", {
   duration: 5,
@@ -188,8 +188,8 @@ wavetl.to("#text-path", {
   ease: "none",
 });
 
-const gltfLoader = new GLTFLoader();
-const skybluesea = new URL("./img/skybluesea.glb", import.meta.url);
+// const gltfLoader = new GLTFLoader();
+// const skybluesea = new URL("./img/skybluesea.glb", import.meta.url);
 
 //light
 const ambientLight = new THREE.AmbientLight(0x333333);
