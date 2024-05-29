@@ -40,10 +40,10 @@ document.body.appendChild(renderer.domElement);
 renderer.shadowMap.enabled = true;
 
 const axesHelper = new THREE.AxesHelper(5);
-scene.add(axesHelper);
+// scene.add(axesHelper);
 
 const gridHelper = new THREE.GridHelper(30, 30);
-scene.add(gridHelper);
+// scene.add(gridHelper);
 
 //subway motion & svg motionblur
 const blurFilter = document.getElementById("blur-filter");
